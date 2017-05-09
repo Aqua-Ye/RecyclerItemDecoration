@@ -52,18 +52,6 @@ public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
             RecyclerView.State state) {
         boolean isReverse = ((LinearLayoutManager) parent.getLayoutManager()).getReverseLayout();
 
-        // last position
-        if (isLastPosition(view, parent)) {
-            if (mLastDrawable != null) {
-                if (isReverse) {
-                    outRect.left = mLastDrawable.getIntrinsicWidth();
-                } else {
-                    outRect.right = mLastDrawable.getIntrinsicWidth();
-                }
-            }
-            return;
-        }
-
         // specific view type
         int childType = parent.getLayoutManager().getItemViewType(view);
         Drawable drawable = mDividerViewTypeMap.get(childType);
@@ -75,15 +63,22 @@ public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
             }
         }
 
+        // last position
+        if (isLastPosition(view, parent) && mLastDrawable != null) {
+            if (isReverse) {
+                outRect.left = mLastDrawable.getIntrinsicWidth();
+            } else {
+                outRect.right = mLastDrawable.getIntrinsicWidth();
+            }
+        }
+
         // first position
         if (isFirstPosition(view, parent) && mFirstDrawable != null) {
-
             if (isReverse) {
                 outRect.right = mFirstDrawable.getIntrinsicWidth();
             } else {
                 outRect.left = mFirstDrawable.getIntrinsicWidth();
             }
-
         }
     }
 
@@ -98,23 +93,6 @@ public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
             View child = parent.getChildAt(i);
             int childViewType = parent.getLayoutManager().getItemViewType(child);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-
-            // last position
-            if (isLastPosition(child, parent)) {
-                if (mLastDrawable != null) {
-                    int left, right;
-                    if (isReverse) {
-                        right = child.getLeft() - params.leftMargin;
-                        left = right - mLastDrawable.getIntrinsicWidth();
-                    } else {
-                        left = child.getRight() + params.rightMargin;
-                        right = left + mLastDrawable.getIntrinsicWidth();
-                    }
-                    mLastDrawable.setBounds(left, top, right, bottom);
-                    mLastDrawable.draw(c);
-                }
-                return;
-            }
 
             // specific view type
             Drawable drawable = mDividerViewTypeMap.get(childViewType);
@@ -131,9 +109,22 @@ public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
                 drawable.draw(c);
             }
 
+            // last position
+            if (isLastPosition(child, parent) && mLastDrawable != null) {
+                int left, right;
+                if (isReverse) {
+                    right = child.getLeft() - params.leftMargin;
+                    left = right - mLastDrawable.getIntrinsicWidth();
+                } else {
+                    left = child.getRight() + params.rightMargin;
+                    right = left + mLastDrawable.getIntrinsicWidth();
+                }
+                mLastDrawable.setBounds(left, top, right, bottom);
+                mLastDrawable.draw(c);
+            }
+
             // first position
             if (isFirstPosition(child, parent) && mFirstDrawable != null) {
-
                 int left, right;
                 if (isReverse) {
                     left = child.getRight() + params.rightMargin;

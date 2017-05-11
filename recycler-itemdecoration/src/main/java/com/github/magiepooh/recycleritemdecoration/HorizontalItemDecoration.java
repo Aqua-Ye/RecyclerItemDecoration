@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -47,10 +48,19 @@ public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
         mLastDrawable = lastDrawable;
     }
 
+    private boolean isRTL() {
+        return isRTL(Locale.getDefault());
+    }
+
+    private boolean isRTL(Locale locale) {
+        final int directionality = Character.getDirectionality(locale.getDisplayName().charAt(0));
+        return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC;
+    }
+
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
             RecyclerView.State state) {
-        boolean isReverse = ((LinearLayoutManager) parent.getLayoutManager()).getReverseLayout();
+        boolean isReverse = ((LinearLayoutManager) parent.getLayoutManager()).getReverseLayout() || isRTL();
 
         // specific view type
         int childType = parent.getLayoutManager().getItemViewType(view);
@@ -86,7 +96,7 @@ public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         int top = parent.getPaddingTop();
         int bottom = parent.getHeight() - parent.getPaddingBottom();
-        boolean isReverse = ((LinearLayoutManager) parent.getLayoutManager()).getReverseLayout();
+        boolean isReverse = ((LinearLayoutManager) parent.getLayoutManager()).getReverseLayout() || isRTL();
 
         int childCount = parent.getChildCount();
         for (int i = 0; i <= childCount - 1; i++) {

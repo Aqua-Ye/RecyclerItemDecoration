@@ -50,19 +50,16 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
             RecyclerView.State state) {
 
-        // last position
-        if (isLastPosition(view, parent)) {
-            if (mLastDrawable != null) {
-                outRect.bottom = mLastDrawable.getIntrinsicHeight();
-            }
-            return;
-        }
-
         // specific view type
         int childType = parent.getLayoutManager().getItemViewType(view);
         Drawable drawable = mDividerViewTypeMap.get(childType);
         if (drawable != null) {
             outRect.bottom = drawable.getIntrinsicHeight();
+        }
+
+        // last position
+        if (isLastPosition(view, parent) && mLastDrawable != null) {
+            outRect.bottom = mLastDrawable.getIntrinsicHeight();
         }
 
         // first position
@@ -82,17 +79,6 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
             int childViewType = parent.getLayoutManager().getItemViewType(child);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
 
-            // last position
-            if (isLastPosition(child, parent)) {
-                if (mLastDrawable != null) {
-                    int top = child.getBottom() + params.bottomMargin;
-                    int bottom = top + mLastDrawable.getIntrinsicHeight();
-                    mLastDrawable.setBounds(left, top, right, bottom);
-                    mLastDrawable.draw(c);
-                }
-                return;
-            }
-
             // specific view type
             Drawable drawable = mDividerViewTypeMap.get(childViewType);
             if (drawable != null) {
@@ -100,6 +86,14 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
                 int bottom = top + drawable.getIntrinsicHeight();
                 drawable.setBounds(left, top, right, bottom);
                 drawable.draw(c);
+            }
+
+            // last position
+            if (isLastPosition(child, parent) && mLastDrawable != null) {
+                int top = child.getBottom() + params.bottomMargin;
+                int bottom = top + mLastDrawable.getIntrinsicHeight();
+                mLastDrawable.setBounds(left, top, right, bottom);
+                mLastDrawable.draw(c);
             }
 
             // first position

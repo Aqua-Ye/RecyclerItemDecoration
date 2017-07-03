@@ -38,12 +38,14 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
     private final Map<Integer, Drawable> mDividerViewTypeMap;
     private final Drawable mFirstDrawable;
     private final Drawable mLastDrawable;
+    private boolean mDividerAfter = true; // always put a divider after, otherwise, divider only in between same type items
 
     public VerticalItemDecoration(Map<Integer, Drawable> dividerViewTypeMap,
-            Drawable firstDrawable, Drawable lastDrawable) {
+            Drawable firstDrawable, Drawable lastDrawable, boolean dividerAfter) {
         mDividerViewTypeMap = dividerViewTypeMap;
         mFirstDrawable = firstDrawable;
         mLastDrawable = lastDrawable;
+        mDividerAfter = dividerAfter;
     }
 
     @Override
@@ -79,13 +81,28 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
             int childViewType = parent.getLayoutManager().getItemViewType(child);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
 
-            // specific view type
-            Drawable drawable = mDividerViewTypeMap.get(childViewType);
-            if (drawable != null) {
-                int top = child.getBottom() + params.bottomMargin;
-                int bottom = top + drawable.getIntrinsicHeight();
-                drawable.setBounds(left, top, right, bottom);
-                drawable.draw(c);
+            if (mDividerAfter) {
+                // specific view type
+                Drawable drawable = mDividerViewTypeMap.get(childViewType);
+                if (drawable != null) {
+                    int top = child.getBottom() + params.bottomMargin;
+                    int bottom = top + drawable.getIntrinsicHeight();
+                    drawable.setBounds(left, top, right, bottom);
+                    drawable.draw(c);
+                }
+            } else if (i < childCount - 1) {
+                View nextChild = parent.getChildAt(i + 1);
+                int nextChildViewType = parent.getLayoutManager().getItemViewType(nextChild);
+                if (nextChildViewType == childViewType) {
+                    // specific view type
+                    Drawable drawable = mDividerViewTypeMap.get(childViewType);
+                    if (drawable != null) {
+                        int top = child.getBottom() + params.bottomMargin;
+                        int bottom = top + drawable.getIntrinsicHeight();
+                        drawable.setBounds(left, top, right, bottom);
+                        drawable.draw(c);
+                    }
+                }
             }
 
             // last position
@@ -120,6 +137,7 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
         private final Map<Integer, Drawable> mDividerViewTypeMap = new HashMap<>();
         private Drawable mFirstDrawable;
         private Drawable mLastDrawable;
+        private boolean mDividerAfter = true;
 
         Builder(Context context) {
             mContext = context;
@@ -163,8 +181,13 @@ public class VerticalItemDecoration extends RecyclerView.ItemDecoration {
             return this;
         }
 
+        public Builder after(boolean after) {
+            mDividerAfter = after;
+            return this;
+        }
+
         public VerticalItemDecoration create() {
-            return new VerticalItemDecoration(mDividerViewTypeMap, mFirstDrawable, mLastDrawable);
+            return new VerticalItemDecoration(mDividerViewTypeMap, mFirstDrawable, mLastDrawable, mDividerAfter);
         }
 
     }

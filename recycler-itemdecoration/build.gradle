@@ -22,8 +22,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:recyclerview-v7:${project.ANDROID_SUPPORT_LIB_VERSION}"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:recyclerview-v7:${project.ANDROID_SUPPORT_LIB_VERSION}"
 }
 
 //// for maven

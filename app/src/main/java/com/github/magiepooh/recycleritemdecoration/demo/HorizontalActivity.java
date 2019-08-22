@@ -6,10 +6,10 @@ import com.github.magiepooh.recycleritemdecoration.demo.binder.PageBinder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +58,7 @@ public class HorizontalActivity extends AppCompatActivity {
 
     @NonNull
     private RecyclerBinderAdapter<DemoSectionType, DemoViewType> initAdapter() {
-        RecyclerBinderAdapter<DemoSectionType, DemoViewType> adapter
-                = new RecyclerBinderAdapter<>();
+        RecyclerBinderAdapter<DemoSectionType, DemoViewType> adapter = new RecyclerBinderAdapter<>();
         List<RecyclerBinder<DemoViewType>> demoBinderList = new ArrayList<>();
         demoBinderList.add(new PageBinder(this, R.drawable.demo0_1));
         demoBinderList.add(new PageBinder(this, R.drawable.demo0_2));

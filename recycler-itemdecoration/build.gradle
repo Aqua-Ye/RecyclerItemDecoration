@@ -5,10 +5,9 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode VERSION_CODE as int
         versionName VERSION_NAME
@@ -23,7 +22,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:recyclerview-v7:${rootProject.supportLibraryVersion}"
+    implementation "androidx.recyclerview:recyclerview:1.0.0"
 }
 
 //// for maven
